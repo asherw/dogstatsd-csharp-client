@@ -26,7 +26,7 @@ namespace Tests
         {
             udpListener = new UdpListener(serverName, serverPort);
             var metricsConfig = new StatsdConfig { StatsdServerName = serverName };
-            StatsdClient.DogStatsd.Configure(metricsConfig);
+            StatsdClient.GlobalStatsd.Instance.Configure(metricsConfig);
             udp = new StatsdUDP(serverName, serverPort);
             statsd = new Statsd(udp);
         }

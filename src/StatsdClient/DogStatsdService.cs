@@ -4,7 +4,7 @@ namespace StatsdClient
 {
     public class DogStatsdService
     {
-        private Statsd _statsD;
+        private IStatsd _statsD;
         private string _prefix;
 
         public void Configure(StatsdConfig config)
@@ -16,9 +16,18 @@ namespace StatsdClient
                 throw new ArgumentNullException("config.StatsdServername");
 
             _prefix = config.Prefix;
-            _statsD = string.IsNullOrEmpty(config.StatsdServerName)
-                      ? null
-                      : new Statsd(new StatsdUDP(config.StatsdServerName, config.StatsdPort, config.StatsdMaxUDPPacketSize));
+            _statsD = new Statsd(new StatsdUDP(config.StatsdServerName, config.StatsdPort, config.StatsdMaxUDPPacketSize));
+        }
+
+        private static readonly object Padlock = new object();
+
+        public void Shutdown()
+        {
+            lock (Padlock)
+            {
+                _statsD?.Dispose();
+                _statsD = null;
+            }
         }
 
         public void Event(string title, string text, string alertType = null, string aggregationKey = null, string sourceType = null, int? dateHappened = null, string priority = null, string hostname = null, string[] tags = null)
@@ -133,7 +142,7 @@ namespace StatsdClient
                 return;
             }
 
-            _statsD.Send(name, (int)status, timestamp, hostname, tags, message);
+            _statsD.Send(name, (int)status, timestamp, hostname, tags, message, false);
         }
 
         private string BuildNamespacedStatName(string statName)

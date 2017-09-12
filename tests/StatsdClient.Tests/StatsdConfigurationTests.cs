@@ -16,7 +16,7 @@ namespace Tests
             UdpListener udpListener = new UdpListener(testServerName, testPort);
             Thread listenThread = new Thread(new ParameterizedThreadStart(udpListener.Listen));
             listenThread.Start();
-            DogStatsd.Increment(testCounterName);
+            StatsdClient.GlobalStatsd.Instance.Increment(testCounterName);
             while (listenThread.IsAlive) ;
             Assert.AreEqual(expectedOutput, udpListener.GetAndClearLastMessages()[0]);
             udpListener.Dispose();
@@ -26,14 +26,14 @@ namespace Tests
         public void throw_exception_when_no_config_provided()
         {
             StatsdConfig metricsConfig = null;
-            Assert.Throws<ArgumentNullException>(() => StatsdClient.DogStatsd.Configure(metricsConfig));
+            Assert.Throws<ArgumentNullException>(() => StatsdClient.GlobalStatsd.Instance.Configure(metricsConfig));
         }
 
         [Test]
         public void throw_exception_when_no_hostname_provided()
         {
             var metricsConfig = new StatsdConfig { };
-            Assert.Throws<ArgumentNullException>(() => StatsdClient.DogStatsd.Configure(metricsConfig));
+            Assert.Throws<ArgumentNullException>(() => StatsdClient.GlobalStatsd.Instance.Configure(metricsConfig));
         }
 
         [Test]
@@ -43,7 +43,7 @@ namespace Tests
             {
                 StatsdServerName = "127.0.0.1"
             };
-            StatsdClient.DogStatsd.Configure(metricsConfig);
+            StatsdClient.GlobalStatsd.Instance.Configure(metricsConfig);
             testReceive("127.0.0.1", 8125, "test", "test:1|c");
         }
 
@@ -55,7 +55,7 @@ namespace Tests
                 StatsdServerName = "127.0.0.1",
                 StatsdPort = 8126
             };
-            StatsdClient.DogStatsd.Configure(metricsConfig);
+            StatsdClient.GlobalStatsd.Instance.Configure(metricsConfig);
             testReceive("127.0.0.1", 8126, "test", "test:1|c");
         }
 
@@ -68,7 +68,7 @@ namespace Tests
                 StatsdPort = 8129,
                 Prefix = "prefix"
             };
-            StatsdClient.DogStatsd.Configure(metricsConfig);
+            StatsdClient.GlobalStatsd.Instance.Configure(metricsConfig);
             testReceive("127.0.0.1", 8129, "test", "prefix.test:1|c");
         }
     }

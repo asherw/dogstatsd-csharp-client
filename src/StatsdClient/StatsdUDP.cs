@@ -2,11 +2,10 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Collections.Generic;
 
 namespace StatsdClient
 {
-    public class StatsdUDP : IDisposable, IStatsdUDP
+    public class StatsdUDP : IStatsdUDP
     {
         private int MaxUDPPacketSize { get; set; } // In bytes; default is MetricsConfig.DefaultStatsdMaxUDPPacketSize.
         // Set to zero for no limit.
@@ -92,7 +91,7 @@ namespace StatsdClient
 
         public void Dispose()
         {
-            UDPSocket.Dispose();
+            UDPSocket?.Dispose();
         }
     }
 }

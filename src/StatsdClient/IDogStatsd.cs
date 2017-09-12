@@ -5,6 +5,7 @@ namespace StatsdClient
     public interface IDogStatsd
     {
         void Configure(StatsdConfig config);
+        void Shutdown();
         void Counter<T>(string statName, T value, double sampleRate = 1, string[] tags = null);
         void Decrement(string statName, int value = 1, double sampleRate = 1, params string[] tags);
 

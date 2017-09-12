@@ -25,7 +25,7 @@ namespace StatsdClient
             {
                 _disposed = true;
                 _stopWatch.Stop();
-                DogStatsd.Timer(_name, _stopWatch.ElapsedMilliseconds(), _sampleRate, _tags);
+                GlobalStatsd.Instance.Timer(_name, _stopWatch.ElapsedMilliseconds(), _sampleRate, _tags);
             }
         }
     }

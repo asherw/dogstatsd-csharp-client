@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace StatsdClient
 {
-    public interface IStatsd
+    public interface IStatsd : IDisposable
     {
         List<string> Commands { get; }
         void Send<TCommandType, T>(string name, T value, double sampleRate, params string[] tags) where TCommandType : StatsdClient.Statsd.Metric;

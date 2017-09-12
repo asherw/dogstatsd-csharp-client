@@ -11,3 +11,4 @@ test-results/
 src/StatsdClient.userprefs
 src/packages/
 src/.vs/
+.vs/

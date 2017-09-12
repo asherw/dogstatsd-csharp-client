@@ -299,5 +299,10 @@ namespace StatsdClient
                 Send<Timing, int>(statName, stopwatch.ElapsedMilliseconds(), sampleRate, tags);
             }
         }
+
+        public void Dispose()
+        {
+            Udp?.Dispose();
+        }
     }
 }
